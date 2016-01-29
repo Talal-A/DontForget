@@ -90,3 +90,13 @@ auth.settings.reset_password_requires_verification = True
 
 ## after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
+
+
+db = DAL('sqlite://storage.sqlite')
+auth = Auth(db)
+auth.define_tables()
+#crud = Crud(db)
+
+db.define_table('alarm',
+                Field('name'),
+                format='%(title)s')
