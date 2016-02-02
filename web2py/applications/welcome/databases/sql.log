@@ -65,3 +65,8 @@ CREATE TABLE alarm(
     name CHAR(512)
 );
 success!
+timestamp: 2016-02-01T16:05:04.182262
+ALTER TABLE alarm ADD message CHAR(512);
+timestamp: 2016-02-01T16:05:04.185404
+ALTER TABLE alarm ADD time CHAR(512);
+success!

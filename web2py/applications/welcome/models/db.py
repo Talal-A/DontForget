@@ -93,10 +93,18 @@ auth.settings.reset_password_requires_verification = True
 
 
 db = DAL('sqlite://storage.sqlite')
+#user authorization stuff
 auth = Auth(db)
 auth.define_tables()
 #crud = Crud(db)
 
+
 db.define_table('alarm',
                 Field('name'),
+                Field('time'),
+                Field('message'),
+
                 format='%(title)s')
+
+#will require enter a time of the form HH:MM:SS
+db.alarm.time.requires = IS_TIME()
