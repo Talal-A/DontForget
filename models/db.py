@@ -101,6 +101,7 @@ auth.define_tables()
 db.define_table('alarm',
                 Field('name'),
                 Field('phone_number'),
+                Field('carrier'),
                 Field('email_address'),
                 Field('reminder_date', 'date'),
 # not needed yet                Field('reminder_time'),
@@ -122,3 +123,6 @@ db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
 
 db.alarm.phone_number.requires = IS_MATCH('^1?((-)\d{3}-?|\(\d{3}\))\d{3}-?\d{4}$',
          error_message='Must be 1-XXX-XXX-XXXX.')
+
+db.alarm.carrier.requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
+        'Other'])
