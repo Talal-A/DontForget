@@ -6,11 +6,15 @@ def user():
     return dict(form=auth())
 
 def index():
-    alarms = db().select(db.alarm.ALL, orderby=db.alarm.name)
-    form=FORM('Your name:', INPUT(_name='name'), INPUT(_type='redirect'))    
-    return dict(alarms=alarms, form=form)
 
+    # Display the form and accept input
 
+    form = SQLFORM(db.alarm)
+
+    if form.process().accepted:
+        response.flash = 'Successfully added a reminder!'
+
+    return dict(form = form)
 
 def create():
 

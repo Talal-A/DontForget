@@ -1,11 +1,3 @@
 {{extend 'layout.html'}}
-<h1>Welcome, Current Alarms</h1>
-<ul>
-
-
-{{for alarm in alarms:}}
-{{=LI(A(alarm.message, _href=URL("show", args=alarm.id)))}} alarm set for: {{=alarm.time}}
-
-{{pass}}
-</ul>
-{{=A('Add Alarm',_href=URL('create'))}}
+<h1>Don't Forget</h1>
+{{=form}}

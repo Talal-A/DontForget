@@ -98,13 +98,27 @@ auth = Auth(db)
 auth.define_tables()
 #crud = Crud(db)
 
-
 db.define_table('alarm',
                 Field('name'),
-                Field('time'),
-                Field('message'),
+                Field('phone_number'),
+                Field('email_address'),
+                Field('reminder_date', 'date'),
+# not needed yet                Field('reminder_time'),
+                Field('reminder_message', 'text'))
 
-                format='%(title)s')
 
 #will require enter a time of the form HH:MM:SS
-db.alarm.time.requires = IS_TIME()
+#db.alarm.time.requires = IS_TIME()
+
+
+# Validation
+
+db.alarm.reminder_date.requires = IS_DATE(format=T('%Y-%m-%d'), error_message = "Must be YYYY-DD-MM")
+
+db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
+
+db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
+        " valid email address")
+
+db.alarm.phone_number.requires = IS_MATCH('^1?((-)\d{3}-?|\(\d{3}\))\d{3}-?\d{4}$',
+         error_message='Must be 1-XXX-XXX-XXXX.')
