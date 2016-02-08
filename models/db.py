@@ -121,8 +121,8 @@ db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
 db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
         " valid email address")
 
-db.alarm.phone_number.requires = IS_MATCH('^1?((-)\d{3}-?|\(\d{3}\))\d{3}-?\d{4}$',
-         error_message='Must be 1-XXX-XXX-XXXX.')
+db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message = 
+        'Please enter your 10 digit phone number')
 
 db.alarm.carrier.requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
         'Other'])
