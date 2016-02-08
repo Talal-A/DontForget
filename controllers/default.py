@@ -10,8 +10,14 @@ def user():
     return dict(form=auth())
 
 def index():
-    alarms = db().select(db.alarm.ALL, orderby=db.alarm.name)
-    form=FORM('Your name:', INPUT(_name='name'), INPUT(_type='redirect'))
+
+    # Display the form and accept input
+
+    form = SQLFORM(db.alarm)
+
+    if form.process().accepted:
+        response.flash = 'Successfully added a reminder!'
+
     if mail:
         if mail.send(to=['weslylim94@gmail.com'],
                 subject='test',
@@ -22,14 +28,8 @@ def index():
                 response.flash = 'fail to send email sorry!'
     else:
             response.flash = 'Unable to send the email : email parameters not defined'
-    return dict(alarms=alarms, form=form)
 
-def create():
-
-     form = SQLFORM(db.alarm).process(next=URL('init'))
-     form.add_button('Alarms', URL('index'))
-
-     return dict(form=form)
+    return dict(form = form)
 
 def show():
     alarms = db.alarm(request.args[0]) or redirect(URL('index'))
