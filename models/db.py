@@ -112,17 +112,35 @@ db.define_table('alarm',
 #db.alarm.time.requires = IS_TIME()
 
 
-# Validation
 
-db.alarm.reminder_date.requires = IS_DATE(format=T('%Y-%m-%d'), error_message = "Must be YYYY-DD-MM")
-
-db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
-
-db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
+#default fields
+#if user is signed on will auto fill the fields else typical messages
+if auth.user:
+    db.alarm.name.default = auth.user.first_name
+    db.alarm.email_address.default= auth.user.email
+else:
+    db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
+    db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
         " valid email address")
 
+# Validation
+db.alarm.reminder_date.requires = IS_DATE(format=T('%Y-%m-%d'), error_message = "Must be YYYY-DD-MM")
 db.alarm.phone_number.requires = IS_MATCH('^1?((-)\d{3}-?|\(\d{3}\))\d{3}-?\d{4}$',
          error_message='Must be 1-XXX-XXX-XXXX.')
 
 db.alarm.carrier.requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
         'Other'])
+
+
+#authentication
+
+from gluon.tools import Auth
+auth = Auth(db)
+auth.define_tables(username=False,signature=False)
+
+#from gluon.contrib.login_methods.rpx_account import RPXAccount
+#auth.settings.actions_disabled=['register','change_password','request_reset_password']
+#auth.settings.login_form = RPXAccount(request,
+#    api_key='630fd1d1ed78383c889a5809d54fd1ea27da907d',
+#    domain='https://dontforget.rpxnow.com/',
+#    url = "http://dontforget.rpxnow.com/%s/default/user/login" % request.application)

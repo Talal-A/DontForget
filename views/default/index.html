@@ -1,3 +1,13 @@
 {{extend 'layout.html'}}
 <h1>Don't Forget</h1>
+
+        {{if name is not None:}}
+            <h1>Welcome  {{=name["first_name"]}} </h1>
+        {{else:}}
+            <h1> Welcome Guest </h1>
+        {{pass}}
+
 {{=form}}
+
+
+
