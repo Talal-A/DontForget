@@ -29,8 +29,8 @@ def index():
                      subject='test',
                      message='test'
                      ):
-            print "hello"
-            # response.flash = 'email sent sucessfully.'
+
+            response.flash = 'email sent sucessfully.'
         else:
             response.flash = 'fail to send email sorry!'
     else:

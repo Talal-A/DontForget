@@ -133,14 +133,15 @@ db.alarm.carrier.requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
 
 
 #authentication
+#from gluon.tools import Auth
+#auth = Auth(db)
+#auth.define_tables(username=False,signature=False)
 
-from gluon.tools import Auth
-auth = Auth(db)
-auth.define_tables(username=False,signature=False)
+#login using social profiles
+from gluon.contrib.login_methods.rpx_account import RPXAccount
+auth.settings.actions_disabled=['register','change_password','request_reset_password']
+auth.settings.login_form = RPXAccount(request,
+    api_key='630fd1d1ed78383c889a5809d54fd1ea27da907d',
+    domain='DontForget',
+    url = 'https://louieGonz.pythonanywhere.com/%s/default/user/login' % request.application)
 
-#from gluon.contrib.login_methods.rpx_account import RPXAccount
-#auth.settings.actions_disabled=['register','change_password','request_reset_password']
-#auth.settings.login_form = RPXAccount(request,
-#    api_key='630fd1d1ed78383c889a5809d54fd1ea27da907d',
-#    domain='https://dontforget.rpxnow.com/',
-#    url = "http://dontforget.rpxnow.com/%s/default/user/login" % request.application)
