@@ -114,19 +114,21 @@ db.define_table('alarm',
 
 #will require enter a time of the form HH:MM:SS
 #db.alarm.time.requires = IS_TIME()
+if auth.user:
+    db.alarm.name.default = auth.user.first_name
+    db.alarm.email_address.default= auth.user.email
+    db.alarm.phone_number.default = auth.user.phone
+    db.alarm.carrier.default = auth.user.carrier
+else:
+    db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
+    db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
+        " valid email address")
+    db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message =
+        'Please enter your 10 digit phone number')
+    db.alarm.carrier.requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
+        'Other'])
+
 
 
 # Validation
-
 db.alarm.reminder_date.requires = IS_DATE(format=T('%Y-%m-%d'), error_message = "Must be YYYY-DD-MM")
-
-db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
-
-db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
-        " valid email address")
-
-db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message = 
-        'Please enter your 10 digit phone number')
-
-db.alarm.carrier.requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
-        'Other'])
