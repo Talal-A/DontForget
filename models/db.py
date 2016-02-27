@@ -57,9 +57,6 @@ auth = Auth(db)
 service = Service()
 plugins = PluginManager()
 
-## create all tables needed by auth if not custom tables
-auth.define_tables(username=False, signature=False)
-
 ## configure email
 mail = auth.settings.mailer
 mail.settings.server = 'logging' if request.is_local else myconf.take('smtp.server')
@@ -95,6 +92,13 @@ auth.settings.reset_password_requires_verification = True
 db = DAL('sqlite://storage.sqlite')
 #user authorization stuff
 auth = Auth(db)
+
+auth.settings.extra_fields['auth_user']= [
+     Field('phone', requires = IS_MATCH('^\d{10}$', error_message = 
+        'Please enter your 10 digit phone number')),
+     Field('carrier', requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
+        'Other']))]
+
 auth.define_tables()
 #crud = Crud(db)
 
