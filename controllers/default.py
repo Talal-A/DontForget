@@ -16,36 +16,34 @@ def index():
     form = SQLFORM(db.alarm)
 
     if form.process().accepted:
+
+        theAddress = ''
+        emailnum = form.vars.phone_number
+        
+        if form.vars.carrier == 'ATT':
+            atatt= '@txt.att.net'
+            theAddress = emailnum + atatt
+        if form.vars.carrier == 'Verizon':
+            verizon= '@vtext.com'
+            theAddress = emailnum + verizon
+        if form.vars.carrier == 'Sprint':
+            sprint= '@messaging.sprintpcs.com'
+            theAddress = emailnum + sprint
+        if form.vars.carrier == 'T-Mobile':
+            tmobile= '@tmomail.net'
+            theAddress = emailnum + tmobile
+
         response.flash = 'Successfully added a reminder!'
 
-
-    theAddress = ''
-    emailnum = form.vars.phone_number
-    if form.vars.carrier == 'ATT':
-        atatt= '@txt.att.net'
-        theAddress = emailnum + atatt
-    if form.vars.carrier == 'Verizon':
-        verizon= '@vtext.com'
-        theAddress = emailnum + verizon
-    if form.vars.carrier == 'Sprint':
-        sprint= '@messaging.sprintpcs.com'
-        theAddress = emailnum + sprint
-    if form.vars.carrier == 'T-Mobile':
-        tmobile= '@tmomail.net'
-        theAddress = emailnum + tmobile
-
-    if mail:
-        if mail.send(to=['weslylim94@gmail.com'],
-                subject='test',
-                message= 'test'
+        if mail.send(to=[theAddress],
+                subject='Your reminder',
+                message= form.vars.reminder_message
             ):
-                response.flash = 'email sent sucessfully.'
+                response.flash = 'Email sent successfully!'
         else:
-                response.flash = 'fail to send email sorry!'
-    else:
-            response.flash = 'Unable to send the email : email parameters not defined'
+                response.flash = 'Failed to send email.'
 
-    return dict(form = form, finalAddress= theAddress)
+    return dict(form = form)
 
 def show():
     alarms = db.alarm(request.args[0]) or redirect(URL('index'))
