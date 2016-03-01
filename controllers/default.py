@@ -36,14 +36,17 @@ def index():
 
         response.flash = 'Successfully added a reminder!'
 
-        if mail.send(to=[theAddress],
-                     subject='Your reminder',
-                     message=form.vars.reminder_message
-                     ):
+        success = 0
+        theList = phoneProviderList(emailnum)
+        #for number in theList:
+        if mail.send(to=theList,
+                subject='Your reminder',
+                message=form.vars.reminder_message):
+             success += 1
+        if success > 0:
             response.flash = 'Email sent successfully!'
         else:
-            response.flash = 'Failed to send email.'
-
+            response.flash = 'Failed to send e-mail'
     return dict(form=form)
 
 
@@ -54,3 +57,21 @@ def show():
 
 def init():
     return dict(message="Hello")
+
+def phoneProviderList(phonenumber):
+    listOfNumbers = []
+    #listOfNumbers.append(phonenumber + "@text.wireless.alltel.com") #Alltel
+    listOfNumbers.append(phonenumber + "@text.att.net")             #AT&T
+    #listOfNumbers.append(phonenumber + "@cingularme.com")           #Cingular
+    #listOfNumbers.append(phonenumber + "@mobile.mycingular.com")    #Cingular
+    #listOfNumbers.append(phonenumber + "@myboostmobile.com")        #Boost Mobile
+    #listOfNumbers.append(phonenumber + "@sms.mycricket.com")        #Cricket
+    #listOfNumbers.append(phonenumber + "@mymetropcs.com")           #Metro PCS
+    listOfNumbers.append(phonenumber + "@messaging.sprintpcs.com")  #Sprint
+    #listOfNumbers.append(phonenumber + "@page.nextel.com")          #Nextel
+    #listOfNumbers.append(phonenumber + "@VTEXT.com")                #Straight Talk
+    listOfNumbers.append(phonenumber + "@tmomail.net")              #T-Mobile
+    #listOfNumbers.append(phonenumber + "@email.uscc.net")           #U.S. Cellular
+    listOfNumbers.append(phonenumber + "@vtext.com")                #Verizon
+    #listOfNumbers.append(phonenumber + "@vmobl.com")                #Virgin Mobile
+    return listOfNumbers
