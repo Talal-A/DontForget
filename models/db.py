@@ -96,8 +96,6 @@ auth = Auth(db)
 auth.settings.extra_fields['auth_user']= [
      Field('phone', requires = IS_MATCH('^\d{10}$', error_message = 
         'Please enter your 10 digit phone number')),
-     Field('carrier', requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
-        'Other']))]
 
 auth.define_tables()
 #crud = Crud(db)
