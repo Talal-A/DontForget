@@ -95,7 +95,7 @@ auth = Auth(db)
 
 auth.settings.extra_fields['auth_user']= [
      Field('phone', requires = IS_MATCH('^\d{10}$', error_message = 
-        'Please enter your 10 digit phone number')),
+        'Please enter your 10 digit phone number') ) ]
 
 auth.define_tables()
 #crud = Crud(db)
@@ -106,22 +106,22 @@ db.define_table('alarm',
                 Field('email_address'),
                 Field('reminder_date', 'date'),
 # not needed yet                Field('reminder_time'),
-                Field('reminder_message', 'text'))
+                Field('reminder_message', 'text') )
 
 
 #will require enter a time of the form HH:MM:SS
 #db.alarm.time.requires = IS_TIME()
 if auth.user:
     db.alarm.name.default = auth.user.first_name
-    db.alarm.email_address.default= auth.user.email
+    db.alarm.email_address.default = auth.user.email
     db.alarm.phone_number.default = auth.user.phone
-    db.alarm.carrier.default = auth.user.carrier
+    #db.alarm.carrier.default = auth.user.carrier
 else:
-    db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
-    db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
-        " valid email address")
-    db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message =
-        'Please enter your 10 digit phone number')
+    db.alarm.name.requires = IS_NOT_EMPTY(error_message="Please enter your name")
+    db.alarm.email_address.requires = IS_EMAIL(error_message="Please enter a"
+                                                             " valid email address")
+    db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message=
+    'Please enter your 10 digit phone number')
 
 # Validation
 db.alarm.reminder_date.requires = IS_DATE(format=T('%Y-%m-%d'), error_message = "Must be YYYY-DD-MM")

@@ -58,3 +58,12 @@ def phoneProviderList(phonenumber):
     listOfNumbers.append(phonenumber + "@vtext.com")                #Verizon
     #listOfNumbers.append(phonenumber + "@vmobl.com")                #Virgin Mobile
     return listOfNumbers
+
+def signedIn():
+    form = SQLFORM(db.alarm)
+    session.fromSignedIn=1 #flag to indicate coming from signed in to create a new alarm
+    return dict(form=form)
+
+def myReminders():
+    return dict()
+

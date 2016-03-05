@@ -1,6 +1,17 @@
 {{extend 'layout.html'}}
-<h1>Don't Forget</h1>
+<head>
+
+<style>
+    div
+</style>
+
+</head>
+
+<div id="title"><h1>Don't Forget</h1></div>
 
 
+{{if auth.user and not session.fromSignedIn:}}
+    {{redirect((URL('signedIn')))}}
+{{pass}}
 
 {{=form}}
