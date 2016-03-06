@@ -101,6 +101,7 @@ auth.define_tables()
 #crud = Crud(db)
 
 db.define_table('alarm',
+                Field('user_id', 'reference auth_user'),
                 Field('name'),
                 Field('phone_number'),
                 Field('email_address'),
@@ -112,15 +113,23 @@ db.define_table('alarm',
 #will require enter a time of the form HH:MM:SS
 #db.alarm.time.requires = IS_TIME()
 if auth.user:
+
+    db.alarm.user_id.default = auth.user_id
     db.alarm.name.default = auth.user.first_name
     db.alarm.email_address.default = auth.user.email
     db.alarm.phone_number.default = auth.user.phone
+
     #db.alarm.carrier.default = auth.user.carrier
-else:
-    db.alarm.name.requires = IS_NOT_EMPTY(error_message="Please enter your name")
-    db.alarm.email_address.requires = IS_EMAIL(error_message="Please enter a"
+
+# Non-writable (hidden) fields
+
+db.alarm.user_id.writable = False
+db.alarm.user_id.readable = False
+
+db.alarm.name.requires = IS_NOT_EMPTY(error_message="Please enter your name")
+db.alarm.email_address.requires = IS_EMAIL(error_message="Please enter a"
                                                              " valid email address")
-    db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message=
+db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message=
     'Please enter your 10 digit phone number')
 
 # Validation
