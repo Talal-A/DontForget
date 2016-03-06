@@ -105,12 +105,13 @@ db.define_table('alarm',
                 Field('phone_number'),
                 Field('email_address'),
                 Field('reminder_date', 'date'),
-# not needed yet                Field('reminder_time'),
+                Field('reminder_time'),
                 Field('reminder_message', 'text') )
 
 
-#will require enter a time of the form HH:MM:SS
-#db.alarm.time.requires = IS_TIME()
+#will require enter a time of the form HH:MM
+db.alarm.reminder_time.requires = IS_TIME()
+
 if auth.user:
 
     db.alarm.user_id.default = auth.user_id

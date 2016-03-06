@@ -1,4 +1,6 @@
 from gluon.tools import Mail
+from datetime import datetime
+import time
 
 mail = Mail()
 
@@ -24,15 +26,7 @@ def index():
 
         theList = phoneProviderList(emailnum)
 
-        if mail.send(to=theList,
-                subject='Your reminder',
-                message=form.vars.reminder_message):
-            response.flash = 'Email sent successfully!'
-        else:
-            response.flash = 'Failed to send e-mail'
-
     return dict(form=form)
-
 
 def show():
     alarms = db.alarm(request.args[0]) or redirect(URL('index'))
