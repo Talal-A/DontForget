@@ -41,6 +41,7 @@ def init():
     return dict(message="Hello")
 
 def phoneProviderList(phonenumber):
+
     listOfNumbers = []
     listOfNumbers.append(phonenumber + "@text.wireless.alltel.com") #Alltel
     listOfNumbers.append(phonenumber + "@text.att.net")             #AT&T
