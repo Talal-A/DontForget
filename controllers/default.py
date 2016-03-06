@@ -38,25 +38,25 @@ def index():
 def show():
     alarms = db.alarm(request.args[0]) or redirect(URL('index'))
 
-
-
 def init():
     return dict(message="Hello")
 
 def phoneProviderList(phonenumber):
+
     listOfNumbers = []
-    #listOfNumbers.append(phonenumber + "@text.wireless.alltel.com") #Alltel
+
+    listOfNumbers.append(phonenumber + "@text.wireless.alltel.com") #Alltel
     listOfNumbers.append(phonenumber + "@text.att.net")             #AT&T
-    #listOfNumbers.append(phonenumber + "@myboostmobile.com")        #Boost Mobile
-    #listOfNumbers.append(phonenumber + "@sms.mycricket.com")        #Cricket
-    #listOfNumbers.append(phonenumber + "@mymetropcs.com")           #Metro PCS
+    listOfNumbers.append(phonenumber + "@myboostmobile.com")        #Boost Mobile
+    listOfNumbers.append(phonenumber + "@sms.mycricket.com")        #Cricket
+    listOfNumbers.append(phonenumber + "@mymetropcs.com")           #Metro PCS
     listOfNumbers.append(phonenumber + "@messaging.sprintpcs.com")  #Sprint
-    #listOfNumbers.append(phonenumber + "@page.nextel.com")          #Nextel
-    #listOfNumbers.append(phonenumber + "@VTEXT.com")                #Straight Talk
+    listOfNumbers.append(phonenumber + "@page.nextel.com")          #Nextel
     listOfNumbers.append(phonenumber + "@tmomail.net")              #T-Mobile
-    #listOfNumbers.append(phonenumber + "@email.uscc.net")           #U.S. Cellular
+    listOfNumbers.append(phonenumber + "@email.uscc.net")           #U.S. Cellular
     listOfNumbers.append(phonenumber + "@vtext.com")                #Verizon
-    #listOfNumbers.append(phonenumber + "@vmobl.com")                #Virgin Mobile
+    listOfNumbers.append(phonenumber + "@vmobl.com")                #Virgin Mobile
+
     return listOfNumbers
 
 def signedIn():
