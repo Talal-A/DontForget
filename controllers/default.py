@@ -2,6 +2,10 @@ from gluon.tools import Mail
 import imaplib
 import email
 from email.header import decode_header
+
+from datetime import datetime
+import time
+
 mail = Mail()
 
 mail.settings.server = 'smtp.gmail.com:587'
@@ -37,7 +41,43 @@ def user():
     return dict(form=auth())
 
 def index():
+
     form = SQLFORM(db.alarm)
+    if form.process().accepted:
+
+        response.flash = 'Successfully added a reminder!'
+
+    return dict(form=form)
+
+def show():
+    alarms = db.alarm(request.args[0]) or redirect(URL('index'))
+
+def init():
+    return dict(message="Hello")
+
+def phoneProviderList(phonenumber):
+
+    listOfNumbers = []
+    listOfNumbers.append(phonenumber + "@text.wireless.alltel.com") #Alltel
+    listOfNumbers.append(phonenumber + "@text.att.net")             #AT&T
+    listOfNumbers.append(phonenumber + "@sms.mycricket.com")        #Cricket
+    listOfNumbers.append(phonenumber + "@messaging.sprintpcs.com")  #Sprint
+    listOfNumbers.append(phonenumber + "@page.nextel.com")          #Nextel
+    listOfNumbers.append(phonenumber + "@tmomail.net")              #T-Mobile
+    listOfNumbers.append(phonenumber + "@email.uscc.net")           #U.S. Cellular
+    listOfNumbers.append(phonenumber + "@vtext.com")                #Verizon
+    return listOfNumbers
+
+def signedIn():
+    form = SQLFORM(db.alarm)
+    session.fromSignedIn=1 #flag to indicate coming from signed in to create a new alarm
+    return dict(form=form)
+
+def myReminders():
+    return dict()
+
+def temp():
+
     stop1 = "Stop"
     stop2 = "stop"
     help1 = "Help"
@@ -68,39 +108,3 @@ def index():
                         mail.send(to=[varFrom],
                             subject='Your Reminder',
                             message = 'Invalid response. Please type \'help\' for more options')
-
-    if form.process().accepted:
-
-        theAddress = ''
-        emailnum = form.vars.phone_number
-
-        if form.vars.carrier == 'ATT':
-            atatt= '@txt.att.net'
-            theAddress = emailnum + atatt
-        if form.vars.carrier == 'Verizon':
-            verizon= '@vtext.com'
-            theAddress = emailnum + verizon
-        if form.vars.carrier == 'Sprint':
-            sprint= '@messaging.sprintpcs.com'
-            theAddress = emailnum + sprint
-        if form.vars.carrier == 'T-Mobile':
-            tmobile= '@tmomail.net'
-            theAddress = emailnum + tmobile
-
-        response.flash = 'Successfully added a reminder!'
-
-        if mail.send(to=[theAddress],
-                subject='Your reminder',
-                message= form.vars.reminder_message
-            ):
-                response.flash = 'Email sent successfully!'
-        else:
-                response.flash = 'Failed to send email.'
-
-    return dict(form = form)
-
-def show():
-    alarms = db.alarm(request.args[0]) or redirect(URL('index'))
-
-def init():
-    return dict(message="Hello")

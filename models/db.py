@@ -57,9 +57,6 @@ auth = Auth(db)
 service = Service()
 plugins = PluginManager()
 
-## create all tables needed by auth if not custom tables
-auth.define_tables(username=False, signature=False)
-
 ## configure email
 mail = auth.settings.mailer
 mail.settings.server = 'logging' if request.is_local else myconf.take('smtp.server')
@@ -95,34 +92,46 @@ auth.settings.reset_password_requires_verification = True
 db = DAL('sqlite://storage.sqlite')
 #user authorization stuff
 auth = Auth(db)
+
+auth.settings.extra_fields['auth_user']= [
+     Field('phone', requires = IS_MATCH('^\d{10}$', error_message = 
+        'Please enter your 10 digit phone number') ) ]
+
 auth.define_tables()
 #crud = Crud(db)
 
 db.define_table('alarm',
-                Field('name'),
+                Field('user_id', 'reference auth_user'),
                 Field('phone_number'),
-                Field('carrier'),
                 Field('email_address'),
                 Field('reminder_date', 'date'),
-# not needed yet                Field('reminder_time'),
-                Field('reminder_message', 'text'))
+                Field('reminder_time'),
+                Field('reminder_message', 'text'),
+                Field('repeat', 'boolean', default = False,
+                     readable = False, writable = False,
+                     label = 'Repeat every day'))
 
 
-#will require enter a time of the form HH:MM:SS
-#db.alarm.time.requires = IS_TIME()
+#will require enter a time of the form HH:MM
+db.alarm.reminder_time.requires = IS_TIME()
 
+if auth.user:
+    db.alarm.user_id.default = auth.user_id
+    db.alarm.email_address.default = auth.user.email
+    db.alarm.phone_number.default = auth.user.phone
+    db.alarm.repeat.writable = True
+    db.alarm.repeat.readable = True
+    #db.alarm.carrier.default = auth.user.carrier
+
+# Non-writable (hidden) fields
+db.alarm.user_id.writable = False
+db.alarm.user_id.readable = False
+
+db.alarm.email_address.requires = IS_EMAIL(error_message="Please enter a"
+                                                             " valid email address")
+
+db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message=
+    'Please enter your 10 digit phone number')
 
 # Validation
-
 db.alarm.reminder_date.requires = IS_DATE(format=T('%Y-%m-%d'), error_message = "Must be YYYY-DD-MM")
-
-db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
-
-db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
-        " valid email address")
-
-db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message = 
-        'Please enter your 10 digit phone number')
-
-db.alarm.carrier.requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
-        'Other'])
