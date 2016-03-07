@@ -13,7 +13,7 @@ mail.settings.sender = 'dontforgetyourevent@gmail.com'
 mail.settings.login = 'dontforgetyourevent@gmail.com:web2pyucsc'
 
 m = imaplib.IMAP4_SSL('imap.gmail.com')
-m.login('dontforgetyourevent@gmail.com', 'web2pyucsc')
+(retcode, capabilities) = m.login('dontforgetyourevent@gmail.com', 'web2pyucsc')
 m.list()
 m.select('inbox')
 
@@ -43,8 +43,8 @@ def user():
 def index():
 
     form = SQLFORM(db.alarm)
+    temp()
     if form.process().accepted:
-
         response.flash = 'Successfully added a reminder!'
 
     return dict(form=form)
@@ -80,31 +80,40 @@ def temp():
 
     stop1 = "Stop"
     stop2 = "stop"
-    help1 = "Help"
-    help2 = "help"
-    # Display the form and accept input
-    #(retcode, messages) = m.search(None, '(UNSEEN)')
-    for i in range( latest_email_id, latest_email_id-1, -1 ):
-        typ, data = m.fetch( i, '(RFC822)' )
-        #if retcode == 'OK':
-        for response_part in data:
-            if isinstance(response_part, tuple):
-                msg = email.message_from_string(response_part[1])
-                #typ, data = m.store(num,'-FLAGS','\\Seen')
-                varSubject = msg['subject']
-                varFrom = msg['from']
-                ms = str(msg)
-                first = '+'
-                if first in varFrom:
-                    if stop1 in ms or stop2 in ms:
-                        mail.send(to=[varFrom],
-                            subject='Your Reminder',
-                            message = 'Stopping reminder')
-                    elif help1 in ms or help2 in ms:
-                        mail.send(to=[varFrom],
-                            subject='Your Reminder',
-                            message = 'Type \'stop\' to prevent reminder messages')
-                    else:
-                        mail.send(to=[varFrom],
-                            subject='Your Reminder',
-                            message = 'Invalid response. Please type \'help\' for more options')
+
+    m.select(readonly=1)
+    (retcode, messages) = m.search(None, '(UNSEEN)')
+    if retcode == 'OK':
+        #for i in range( latest_email_id, latest_email_id-1, -5 ):
+        for i in messages[0].split():
+            typ, data = m.fetch( i, '(RFC822)' )
+            #m.store(messages[0].replace(' ',','),'+FLAGS','\Seen')
+            for response_part in data:
+                if isinstance(response_part, tuple):
+                    msg = email.message_from_string(response_part[1])
+                    #typ, data = m.store(i,'-FLAGS','\\Seen')
+                    varSubject = msg['subject']
+                    varFrom = msg['from']
+                    ms = str(msg)
+                    first = '+'
+                    if first in varFrom:
+                        if stop1 in ms or stop2 in ms:
+                            #mail.send(to=[varFrom],
+                            #    subject='Your Reminder',
+                            #    message = 'Stopping reminder')
+                            typ, data = m.store(i,'+FLAGS','\\Seen')
+                        #number = str(varFrom)[2:12]
+                        #response.flash = number
+                    elif varFrom[0].isdigit():
+                        if stop1 in ms or stop2 in ms:
+                            #mail.send(to=[varFrom],
+                            #    subject='Your Reminder',
+                            #    message = 'Stopping reminder')
+                            typ, data = m.store(i,'+FLAGS','\\Seen')
+                            number = str(varFrom)[0:10]
+                            response.flash = 'nice'
+                    #else:
+                     #   response.flash = 'none'
+                            #mail.send(to=[varFrom],
+                            #    subject='Your Reminder',
+                            #    message = 'Please type \'stop\' if you no longer want to receive reminders.')
