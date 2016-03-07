@@ -14,9 +14,7 @@ def user():
 
 def index():
     # Display the form and accept input
-
     form = SQLFORM(db.alarm)
-
     if form.process().accepted:
 
         theAddress = ''

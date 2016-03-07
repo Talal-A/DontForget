@@ -106,22 +106,23 @@ db.define_table('alarm',
                 Field('email_address'),
                 Field('reminder_date', 'date'),
                 Field('reminder_time'),
-                Field('reminder_message', 'text') )
+                Field('reminder_message', 'text'),
+                Field('repeat', 'boolean', default = False,
+                     readable = False, writable = False))
 
 
 #will require enter a time of the form HH:MM
 db.alarm.reminder_time.requires = IS_TIME()
 
 if auth.user:
-
     db.alarm.user_id.default = auth.user_id
     db.alarm.email_address.default = auth.user.email
     db.alarm.phone_number.default = auth.user.phone
-
+    db.alarm.repeat.writable = True
+    db.alarm.repeat.readable = True
     #db.alarm.carrier.default = auth.user.carrier
 
 # Non-writable (hidden) fields
-
 db.alarm.user_id.writable = False
 db.alarm.user_id.readable = False
 
