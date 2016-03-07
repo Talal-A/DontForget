@@ -108,7 +108,8 @@ db.define_table('alarm',
                 Field('reminder_time'),
                 Field('reminder_message', 'text'),
                 Field('repeat', 'boolean', default = False,
-                     readable = False, writable = False))
+                     readable = False, writable = False,
+                     label = 'Repeat every day'))
 
 
 #will require enter a time of the form HH:MM
