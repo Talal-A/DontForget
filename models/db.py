@@ -103,7 +103,6 @@ auth.define_tables()
 db.define_table('alarm',
                 Field('user_id', 'reference auth_user'),
                 Field('phone_number'),
-                Field('email_address'),
                 Field('reminder_date', 'date'),
                 Field('reminder_time'),
                 Field('reminder_message', 'text'),
@@ -117,7 +116,6 @@ db.alarm.reminder_time.requires = IS_TIME()
 
 if auth.user:
     db.alarm.user_id.default = auth.user_id
-    db.alarm.email_address.default = auth.user.email
     db.alarm.phone_number.default = auth.user.phone
     db.alarm.repeat.writable = True
     db.alarm.repeat.readable = True
@@ -127,8 +125,6 @@ if auth.user:
 db.alarm.user_id.writable = False
 db.alarm.user_id.readable = False
 
-db.alarm.email_address.requires = IS_EMAIL(error_message="Please enter a"
-                                                             " valid email address")
 
 db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message=
     'Please enter your 10 digit phone number')
