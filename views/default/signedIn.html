@@ -1,5 +1,26 @@
 {{extend "layout.html"}}
 
-{{=A('View Past Reminders',_href=URL('myReminders'))}}
+<br>
+<br>
+<br>
 
-{{=A('Create new Reminder', _href=URL('index'))}}
+<div class="container" >
+<link href="{{=URL('static', 'css/button.css')}}" rel="stylesheet" type="text/css" />
+
+<a href="{{=URL('myReminders')}}" class="button"><span>✓</span>View Past Reminders </a>
+<a href="{{=URL('index')}}" class="button orange active"><span>✓</span>Create new Reminder</a>
+
+<!-- More Buttons if we need them-->
+
+<h2>Quick Alarms</h2>
+<a href="{{=URL('quickAlarm')}}" class="button purple"><span>✓</span>Wake Up</a>
+<a href="{{=URL('quickAlarm')}}" class="button turquoise"><span>✓</span>Birthday Reminder</a>
+<a href="{{=URL('quickAlarm')}}" class="button red"><span>✓</span>Homework Assignment</a>
+
+</div>
+
+<h2>{{#=session.alarmType}}</h2>
+
+{{#=A('View Past Reminders',_href=URL('myReminders'))}}
+
+{{#=A('Create new Reminder', _href=URL('index'))}}

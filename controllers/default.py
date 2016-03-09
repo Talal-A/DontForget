@@ -44,7 +44,7 @@ def user():
 def index():
 
     form = SQLFORM(db.alarm)
-    
+
     if form.process().accepted:
         response.flash = 'Successfully added a reminder!'
 
@@ -70,6 +70,10 @@ def phoneProviderList(phonenumber):
     return listOfNumbers
 
 def signedIn():
+    #if user not signed in redirect to index/main page
+    if not auth.user:
+        redirect(URL('default', 'index'))
+
     form = SQLFORM(db.alarm)
     session.fromSignedIn=1 #flag to indicate coming from signed in to create a new alarm
     return dict(form=form)
@@ -77,6 +81,48 @@ def signedIn():
 def myReminders():
     return dict()
 
+def quickAlarm():
+    #using the session object to hold a flag for how display the form
+    session.alarmType = "quick"
+    form = SQLFORM(db.alarm)
+    if form.process().accepted:
+        session.alarmType = "none"
+        response.flash = 'Alarm Set!!!!!!'
+        redirect((URL('signedIn')))
+        session.alarmType = "none"
+    return dict(form=form)
+
+def display_manual_form():
+
+    form = SQLFORM(db.alarm)
+
+    user1 = db.auth_user
+    date = datetime.date
+
+    if form.process(session=None, formname= None, keepvalues=True).accepted:
+        if auth.user and not session.fromSignedIn:
+            redirect((URL('signedIn')))
+        elif auth.user:
+            redirect(URL('signedIn'))
+        elif not auth.user:
+            redirect(URL('reminderSummary'))
+
+        response.flash = 'Successfully added a reminder!'
+        redirect(URL('default','signedIn'))
+
+    elif form.errors:
+        print "form submit Failed"
+        print form.errors #prints fields that produced errors
+        print "Form Vars = "
+        print form.vars # holds values that passed validation
+    else:
+        print "please fill in the form"
+        response.flash = 'please fill the form'
+    # Note: no form instance is passed to the view
+    return dict(form=form,user1=user1,date=date)
+
+def reminderSummary():
+    return dict()
 def temp():
 
     stop1 = "Stop"

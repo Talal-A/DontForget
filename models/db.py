@@ -105,7 +105,7 @@ db.define_table('alarm',
                 Field('phone_number'),
                 Field('reminder_date', 'date'),
                 Field('reminder_time'),
-                Field('reminder_message', 'text'),
+                Field('reminder_message'),
                 Field('repeat', 'boolean', default = False,
                      readable = False, writable = False,
                      label = 'Repeat every day'))
@@ -120,6 +120,14 @@ if auth.user:
     db.alarm.repeat.writable = True
     db.alarm.repeat.readable = True
     #db.alarm.carrier.default = auth.user.carrier
+
+    #if quick alarm flag set, display only the time
+    if session.alarmType == "quick":
+        print "quick alarm is true"    #debugging statement
+        #hiding all the fields, b/c already have the info
+        db.alarm.phone_number.readable =db.alarm.phone_number.writable= False
+        db.alarm.reminder_message.writable = db.alarm.reminder_message.readable = False
+#        db.alarm.reminder_time_zone.writable = db.alarm.reminder_time_zone.readable = False
 
 # Non-writable (hidden) fields
 db.alarm.user_id.writable = False
