@@ -111,11 +111,8 @@ def display_manual_form():
         redirect(URL('default','signedIn'))
 
     elif form.errors:
+        # TODO FIXME: Remove before pushing live
         response.flash = form.errors
-        print "form submit Failed"
-        #print form.errors #prints fields that produced errors
-        print "Form Vars = "
-        #print form.vars # holds values that passed validation
     else:
         print "please fill in the form"
         response.flash = 'please fill the form'

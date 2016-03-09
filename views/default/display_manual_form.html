@@ -144,17 +144,17 @@ Will be putting into its own file later this week
 
     <div class="section"><span>1</span>Phone Number</div>
         <div class="inner-wrap">
-        <label>Phone Number<input type="number" name="phone_number" value="{{=form.vars.phone_number}} "/></label>
+        <label>Phone Number<input type="number" name="phone_number" value="{{=auth.user.phone}}"/></label>
 
     </div>
     <div class="section"><span>2</span>Reminder Date + Time</div>
         <div class="inner-wrap">
-        <label>Reminder Date <input  type="date" onclick="myFunction()" name="reminder_date" value="{{=form.vars.reminder_date}} " /></label>
-        <label>Reminder Time <input type="time" onclick="myFunction()" name="reminder_time" value="{{=form.vars.reminder_time}} " /></label>
+        <label>Reminder Date <input  type="date" onclick="myFunction()" name="reminder_date" value="" /></label>
+        <label>Reminder Time <input type="time" onclick="myFunction()" name="reminder_time" value="" /></label>
     </div>
     <div class="section"><span>3</span>Reminder Message</div>
         <div class="inner-wrap">
-        <label>Reminder Message <input type="text" name="reminder_message" value="{{=form.vars.reminder_message}} " /></label>
+        <label>Reminder Message <input type="text" name="reminder_message" value="" /></label>
     </div>
     <div class="button-section">
      <input type="submit" name="Sign Up" />
