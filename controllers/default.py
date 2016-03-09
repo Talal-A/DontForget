@@ -12,30 +12,31 @@ mail.settings.server = 'smtp.gmail.com:587'
 mail.settings.sender = 'dontforgetyourevent@gmail.com'
 mail.settings.login = 'dontforgetyourevent@gmail.com:web2pyucsc'
 
-m = imaplib.IMAP4_SSL('imap.gmail.com')
-(retcode, capabilities) = m.login('dontforgetyourevent@gmail.com', 'web2pyucsc')
-m.list()
-m.select('inbox')
+def mailScan():
+    m = imaplib.IMAP4_SSL('imap.gmail.com')
+    (retcode, capabilities) = m.login('dontforgetyourevent@gmail.com', 'web2pyucsc')
+    m.list()
+    m.select('inbox')
 
-m.select('inbox')
-typ, data = m.search(None, 'ALL')
-ids = data[0]
-id_list = ids.split()
+    m.select('inbox')
+    typ, data = m.search(None, 'ALL')
+    ids = data[0]
+    id_list = ids.split()
 
-#get the most recent email id
-latest_email_id = int( id_list[-1] )
+    #get the most recent email id
+    latest_email_id = int( id_list[-1] )
 
-imapdb = DAL("imap://dontforgetyourevent@gmail.com:web2pyucsc@smtp.gmail.com:993", pool_size=1)
-imapdb.define_tables()
+    imapdb = DAL("imap://dontforgetyourevent@gmail.com:web2pyucsc@smtp.gmail.com:993", pool_size=1)
+    imapdb.define_tables()
 
-q = imapdb.INBOX.seen == False
-q &= imapdb.INBOX.created == request.now.date()
-q &= imapdb.INBOX.size < 6000
-unread = imapdb(q).count()
+    q = imapdb.INBOX.seen == False
+    q &= imapdb.INBOX.created == request.now.date()
+    q &= imapdb.INBOX.size < 6000
+    unread = imapdb(q).count()
 
-rows = imapdb(q).select()
+    rows = imapdb(q).select()
 
-mymessage = imapdb(imapdb.INBOX.uid == latest_email_id).select().first()
+    mymessage = imapdb(imapdb.INBOX.uid == latest_email_id).select().first()
 
 def user():
     return dict(form=auth())
@@ -43,7 +44,7 @@ def user():
 def index():
 
     form = SQLFORM(db.alarm)
-    temp()
+    
     if form.process().accepted:
         response.flash = 'Successfully added a reminder!'
 
