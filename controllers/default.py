@@ -98,6 +98,12 @@ def display_manual_form():
 
     user1 = db.auth_user
     date = datetime.date
+    # if user signed in autofill
+    if auth.user:
+        phoneNum = auth.user.phone
+    # if not leave blank
+    else:
+        phoneNum = "none"
 
     if form.process(session=None, formname= None, keepvalues=True).accepted:
         if auth.user and not session.fromSignedIn:
@@ -113,11 +119,15 @@ def display_manual_form():
     elif form.errors:
         # TODO FIXME: Remove before pushing live
         response.flash = form.errors
+        print "Form Failed"
+        # if signed in, will not overwrite users phone number
+        if not auth.user:
+            phoneNum = form.vars.phone_number #if fail, refill the phone number
     else:
         print "please fill in the form"
         response.flash = 'please fill the form'
     # Note: no form instance is passed to the view
-    return dict(form=form,user1=user1,date=date)
+    return dict(form=form,user1=user1,date=date,phoneNum=phoneNum)
 
 def reminderSummary():
     return dict()
