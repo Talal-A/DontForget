@@ -1,0 +1,5 @@
+{{extend 'layout.html'}}
+<h1>Your alarm</h1>
+<h1>{{=alarm.reminder_date}}</h1>
+[ {{=A('edit', _href=URL('edit', args=request.args))}} ]
+Alarm: {{=MARKMIN(alarm.reminder_date)}}

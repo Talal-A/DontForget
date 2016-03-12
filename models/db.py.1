@@ -95,54 +95,50 @@ auth = Auth(db)
 
 auth.settings.extra_fields['auth_user']= [
      Field('phone', requires = IS_MATCH('^\d{10}$', error_message = 
-        'Please enter your 10 digit phone number') ) ]
+        'Please enter your 10 digit phone number')),
+     Field('carrier', requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
+        'Other']))]
 
 auth.define_tables()
 #crud = Crud(db)
 
 db.define_table('alarm',
-                Field('user_id', 'reference auth_user'),
+                Field('name'),
                 Field('phone_number'),
+                Field('carrier'),
+                Field('email_address'),
                 Field('reminder_date', 'date'),
-                Field('reminder_time'),
-                Field('reminder_message'),
-                Field('repeat', 'boolean', default = False,
-                     readable = False, writable = False,
-                     label = 'Repeat every day'))
+# not needed yet                Field('reminder_time'),
+                Field('reminder_message', 'text'))
 
-db.define_table('addressBook',
-                Field('user', 'reference auth_user', default=auth.user_id, writable=False,readable=False),
-                Field('contact'),
-                Field('phone_number'))
+db.define_table('requests',
+                Field('requester', 'reference auth_user', default=auth.user_id, writable=False),
+                Field('requestee', 'reference auth_user'))
 
+db.define_table('friends',
+                Field('firstfriend', 'reference auth_user', default = auth.user_id, writable=False),
+                Field('friend', 'reference auth_user', writable=False))
 
-#will require enter a time of the form HH:MM
-db.alarm.reminder_time.requires = IS_TIME()
+db.define_table('sendto',
+                Field('friends', 'reference auth_user', writable=False))
 
+#will require enter a time of the form HH:MM:SS
+#db.alarm.time.requires = IS_TIME()
 if auth.user:
-    db.alarm.user_id.default = auth.user_id
+    db.alarm.name.default = auth.user.first_name
+    db.alarm.email_address.default= auth.user.email
     db.alarm.phone_number.default = auth.user.phone
-    db.alarm.repeat.writable = True
-    db.alarm.repeat.readable = True
-    #db.alarm.carrier.default = auth.user.carrier
-
-#     #if quick alarm flag set, display only the time
-#     if session.alarmType == "quick":
-#         print "quick alarm is true"    #debugging statement
-#         #hiding all the fields, b/c already have the info
-#         db.alarm.phone_number.readable =db.alarm.phone_number.writable= False
-#        # db.alarm.reminder_message.writable = db.alarm.reminder_message.readable = False
-# #        db.alarm.reminder_time_zone.writable = db.alarm.reminder_time_zone.readable = False
-
-# Non-writable (hidden) fields
-db.alarm.user_id.writable = False
-db.alarm.user_id.readable = False
+    db.alarm.carrier.default = auth.user.carrier
+else:
+    db.alarm.name.requires = IS_NOT_EMPTY(error_message = "Please enter your name")
+    db.alarm.email_address.requires = IS_EMAIL(error_message = "Please enter a"
+        " valid email address")
+    db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message =
+        'Please enter your 10 digit phone number')
+    db.alarm.carrier.requires = IS_IN_SET(['ATT', 'Verizon', 'T-Mobile', 'Sprint',
+        'Other'])
 
 
-db.alarm.phone_number.requires = IS_MATCH('^\d{10}$', error_message=
-    'Please enter your 10 digit phone number')
-db.addressBook.phone_number.requires = IS_MATCH('^\d{10}$', error_message=
-    'Please enter your 10 digit phone number')
 
 # Validation
 db.alarm.reminder_date.requires = IS_DATE(format=T('%Y-%m-%d'), error_message = "Must be YYYY-DD-MM")

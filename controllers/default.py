@@ -79,7 +79,9 @@ def signedIn():
     return dict(form=form)
 
 def myReminders():
-    return dict()
+    list =  db(db.alarm.phone_number == auth.user.phone).select()
+
+    return dict(list=list)
 
 def quickAlarm():
     #using the session object to hold a flag for how display the form
@@ -172,3 +174,59 @@ def temp():
                             #mail.send(to=[varFrom],
                             #    subject='Your Reminder',
                             #    message = 'Please type \'stop\' if you no longer want to receive reminders.')
+
+
+
+
+@auth.requires_login()
+def viewall():
+
+    #Row of any friend reqeusts to user
+    row = db(db.requests.requestee==auth.user_id).select()
+    if row:
+        response.flash = 'You have friend requests'
+    #First friend request
+    x = row.first()
+    if x:
+        y = x.requester
+        response.flash = y
+        #Fill the first part of the form in with the logged in user
+        db.friends.friend.default=x.requester
+    #rowx = db((db.requests.requestee==auth.user_id) & (db.requets.requester==x.requester))
+    friendz= SQLFORM(db.friends)
+    if friendz.process().accepted:    #### delete the first friend request
+        db((db.requests.requestee==auth.user_id) & (db.requests.requester==x.requester)).delete()
+
+    #Lists all the alarms for the user
+    list =  db(db.alarm.phone_number == auth.user.phone).select()
+
+    #Form to request friends
+    form = SQLFORM(db.requests).process()
+
+    return dict(list=list, form=form, row=row, friendz=friendz)
+
+def addcontact():
+    form = SQLFORM(db.addressBook).process()
+    return dict(form=form)
+
+def friendsend():
+    #alarmx = db.alarm(request.args[0]) or redirect(URL('index'))
+    form = FORM('Enter A Friend`s Name',
+              INPUT(_name='number', requires=IS_NOT_EMPTY()),
+              INPUT(_type='submit'))
+    if form.process().accepted:
+        check=form.vars.number
+        l = db(db.auth_user.id==auth.user_id).select()
+        p=l.first()
+        q = db(db.addressBook.user==auth.user_id & db.addressBook.contact==check).select()
+        f = q.first()
+        if f:
+            response.flash='hello?'
+            #db.alarm.insert( user_id = auth.user_id, phone_number = f.phone_number, email_address = p.email, reminder_date = alarmx.reminder_date,
+             #                   reminder_message = alarmx.reminder_message, repeat=False)
+        else:
+            response.flash='not your friend'
+    else:
+        response.flash='form error'
+
+    return dict(form=form)
