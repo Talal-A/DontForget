@@ -210,22 +210,25 @@ def addcontact():
     return dict(form=form)
 
 def friendsend():
-    #alarmx = db.alarm(request.args[0]) or redirect(URL('index'))
+    alarmx = db.alarm(request.args[0]) or redirect(URL('index'))
+    #response.flash=alarmx.phone_number
     form = FORM('Enter A Friend`s Name',
               INPUT(_name='number', requires=IS_NOT_EMPTY()),
               INPUT(_type='submit'))
     if form.process().accepted:
         check=form.vars.number
+        #response.flash=check
         l = db(db.auth_user.id==auth.user_id).select()
         p=l.first()
-        q = db(db.addressBook.user==auth.user_id & db.addressBook.contact==check).select()
-        f = q.first()
-        if f:
-            response.flash='hello?'
-            #db.alarm.insert( user_id = auth.user_id, phone_number = f.phone_number, email_address = p.email, reminder_date = alarmx.reminder_date,
-             #                   reminder_message = alarmx.reminder_message, repeat=False)
-        else:
-            response.flash='not your friend'
+        #m=db(db.auth_user.id==auth.user_id).select()
+        q = db((db.addressBook.user==auth.user_id) & (db.addressBook.contact==check)).select().first()
+        if q:
+            #response.flash=q.phone_number
+            if db.alarm.insert( user_id = auth.user_id, phone_number = q.phone_number, reminder_date = alarmx.reminder_date,
+                                reminder_message = alarmx.reminder_message, repeat=False):
+                response.flash='email sent'
+        #else:
+        #    response.flash='not your friend'
     else:
         response.flash='form error'
 
