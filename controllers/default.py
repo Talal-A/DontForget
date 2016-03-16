@@ -59,27 +59,15 @@ def show():
 def init():
     return dict(message="Hello")
 
-def phoneProviderList(phonenumber):
-
-    listOfNumbers = []
-    listOfNumbers.append(phonenumber + "@text.wireless.alltel.com") #Alltel
-    listOfNumbers.append(phonenumber + "@text.att.net")             #AT&T
-    listOfNumbers.append(phonenumber + "@sms.mycricket.com")        #Cricket
-    listOfNumbers.append(phonenumber + "@messaging.sprintpcs.com")  #Sprint
-    listOfNumbers.append(phonenumber + "@page.nextel.com")          #Nextel
-    listOfNumbers.append(phonenumber + "@tmomail.net")              #T-Mobile
-    listOfNumbers.append(phonenumber + "@email.uscc.net")           #U.S. Cellular
-    listOfNumbers.append(phonenumber + "@vtext.com")                #Verizon
-    return listOfNumbers
-
-
+@auth.requires_login()
 def quick_reminder_birthday():
 
     form = SQLFORM.factory(
         Field('birthday_name', 'string',  requires = IS_NOT_EMPTY()),
         Field('birthday_date', 'date', requires = IS_DATE()))
 
-    if form.process().accepted:
+    #if form.process().accepted:
+    if form.process(session=None, formname= None, keepvalues=True).accepted:
 
         user = auth.user_id
         phone = auth.user.phone
@@ -97,7 +85,63 @@ def quick_reminder_birthday():
 
         response.flash = form.errors
 
+
     return dict(form= form)
+
+@auth.requires_login()
+def quick_reminder_homework():
+
+    form = SQLFORM.factory(
+        Field('homework_name', 'string',  requires = IS_NOT_EMPTY()),
+        Field('homework_date', 'date', requires = IS_DATE()))
+
+    if form.process(session=None, formname= None, keepvalues=True).accepted:
+
+        user = auth.user_id
+        phone = auth.user.phone
+        date = form.vars.homework_date
+        time = "00:00:00" # default - remind them at midnight
+        message = str(form.vars.homework_name) + " is due today!"
+        rep = False
+
+        db.alarm.insert(user_id = user, phone_number = phone, reminder_date = date,
+            reminder_time = time, reminder_message = message, repeat = rep)
+
+        redirect(URL('signedIn'))
+
+    else:
+
+        response.flash = form.errors
+
+    return dict(form= form)
+
+@auth.requires_login()
+def quick_reminder_wakeup():
+
+    form = SQLFORM.factory(
+        Field('wakeup_time', 'date', requires = IS_TIME()))
+
+    if form.process(session=None, formname= None, keepvalues=True).accepted:
+
+        user = auth.user_id
+        phone = auth.user.phone
+        date = datetime.datetime.today() + datetime.timedelta(days=1)
+        time = form.vars.wakeup_time
+        message = "Rise and shine!"
+        rep = False
+
+        db.alarm.insert(user_id = user, phone_number = phone, reminder_date = date,
+            reminder_time = time, reminder_message = message, repeat = rep)
+
+        redirect(URL('signedIn'))
+
+    else:
+
+        response.flash = form.errors
+
+    return dict(form= form)
+
+
 #controller for signedIn user
 def signedIn():
     #if user not signed in redirect to index/main page
@@ -110,17 +154,18 @@ def signedIn():
     #list = myReminders()
     list =  db(db.alarm.phone_number == auth.user.phone).select()
 
-    #list to hold prettydate() times
+    #list to hold prettydate(), time, and message
     remLists = []
     today = datetime.date.today()
 
     for alarm in list:
         # we only want to display future reminders
-        if alarm.reminder_date > today:
+        if alarm.reminder_date >= today:
             a = prettydate(alarm.reminder_date,T)
             b = alarm.reminder_time
+            c = alarm.reminder_message
             # place time and prettydate() into obj
-            objAB = [a,b]
+            objAB = [a,b,c]
             #append to list
             remLists.append(objAB)
 
@@ -164,19 +209,19 @@ def display_manual_form():
         elif not auth.user:
             redirect(URL('reminderSummary'))
 
-        response.flash = 'Successfully added a reminder!'
+        #response.flash = 'Successfully added a reminder!'
         redirect(URL('default','signedIn'))
 
     elif form.errors:
         # TODO FIXME: Remove before pushing live
-        response.flash = form.errors
-        print "Form Failed"
+        #response.flash = form.errors
+        print "Form Failed" #debugging statement
         # if signed in, will not overwrite users phone number
         if not auth.user:
-            phoneNum = form.vars.phone_number #if fail, refill the phone number
-    else:
-        print "please fill in the form"
-        response.flash = 'please fill the form'
+            phoneNum = form.vars.phone_number #if fail, auto-refill the phone number
+    #else:
+        #print "please fill in the form"
+        #response.flash = 'please fill the form'
     # Note: no form instance is passed to the view
     return dict(form=form,user1=user1,date=date,phoneNum=phoneNum)
 

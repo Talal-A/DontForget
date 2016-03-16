@@ -27,18 +27,18 @@
 
 <div class="form-style-10">
 <link href="{{=URL('static', 'css/customForm.css')}}" rel="stylesheet" type="text/css" />
-<h1>Birthday Reminder!<span>Fill out the form and we will sent you a reminder!</span></h1>
+<h1>Homework Reminder!<span>Fill out the form and we will sent you a reminder!</span></h1>
 {{=form.custom.begin}}
 <form action="#" enctype="multipart/form-data" method="post" autocomplete="on">
 
-    <div class="section"><span>1</span>Whos birthdays?</div>
+    <div class="section"><span>1</span>What Class?</div>
         <div class="inner-wrap">
-        <label>Name<input type="text" name="birthday_name" value=""/></label>
+        <label>Name<input type="text" name="homework_name" value=""/></label>
 
     </div>
-    <div class="section"><span>2</span>When is it</div>
+    <div class="section"><span>2</span>When is it due?</div>
         <div class="inner-wrap">
-        <label>When is it? <input  type="text" id="datepicker" onclick="myFunction()" name="birthday_date" value="{{=form.vars.reminder_date}}" /></label>
+        <label>Date <input  type="text" id="datepicker" onclick="myFunction()" name="homework_date" value="{{=form.vars.reminder_date}}" /></label>
     </div>
 
     <div class="button-section">

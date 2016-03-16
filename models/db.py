@@ -108,7 +108,13 @@ db.define_table('alarm',
                 Field('reminder_message'),
                 Field('repeat', 'boolean', default = False,
                      readable = False, writable = False,
-                     label = 'Repeat every day'))
+                     label = 'Repeat every day'),
+                Field('sent', 'boolean', default = False,
+                    readable = False, writable = False),
+                Field('repeat_offset', 'integer', label = 'How many days between each reminder',
+                     readable = True, writable = True),
+                Field('repeat_amount', 'integer', label = 'How many times would you like the reminder to repeat',
+                     readable = True, writable = True))
 
 db.define_table('blackList',
                 Field('phone_number'))
@@ -127,6 +133,10 @@ if auth.user:
     db.alarm.phone_number.default = auth.user.phone
     db.alarm.repeat.writable = True
     db.alarm.repeat.readable = True
+    db.alarm.repeat_offset.writable = True
+    db.alarm.repeat_offset.readable = True
+    db.alarm.repeat_amount.writable = True
+    db.alarm.repeat_amount.readable = True
     #db.alarm.carrier.default = auth.user.carrier
 
 #     #if quick alarm flag set, display only the time

@@ -2,7 +2,7 @@
  edits 3/10/16: LG - will autofill,use phoneNum var. init in controller
                    - Put form.vars.xx to autofill forms if get a form.error
                    - Styling moved to static/customForm.css
-                   -- added datepicker, jqueryUi for date input, needed some extra formatting but works
+                   - added datepicker, jqueryUi for date input, needed some extra formatting but works
  -->
 
 {{extend 'layout.html'}}
@@ -54,7 +54,7 @@
      <input type="submit" name="Sign Up" />
      <input type="hidden" name="formname" value="test" />
      <span class="privacy-policy">
-     <!--<input type="checkbox" name="field7">You agree to our Terms and Policy.-->
+
      </span>
     </div>
 </form>
@@ -65,7 +65,7 @@
 <br>
 
 <!--Display form.vars for debugging -->
-{{=BEAUTIFY(form.vars)}}
+{{#=BEAUTIFY(form.vars)}}
 
 
 </html>
