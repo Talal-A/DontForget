@@ -1,7 +1,7 @@
 # Attempting to send mail at the correct times.
 
 import time
-from datetime import datetime
+import datetime
 from gluon.tools import Mail
 
 mail = Mail()
@@ -25,42 +25,31 @@ def phoneProviderList(phonenumber):
 
 while True: # inf loop
 
-    currentMin = datetime.now().minute
-    currentHour = datetime.now().hour
-
-    if currentHour < 10:
-    	currentHourString = "0" + str(currentHour)
-    else:
-    	currentHourString = str(currentHour)
-
     # Current Date YYYY-MM-DD
 
-    currentDate = datetime.now().date
+    currentDate = datetime.datetime.now().date
 
     print(":re")
 
     # Current Time HH:MM:00
 
-    currentTime = currentHourString + ":" + str(currentMin) + ":00"
 
+    currentTime = datetime.datetime.now().time()
     print(currentTime)
 
-    rows = db((db.alarm.reminder_date == currentDate) & (db.alarm.reminder_time==currentTime)).select()
     rows = db((db.alarm.reminder_date == currentDate) & (db.alarm.reminder_time <= currentTime) & (db.alarm.sent == False)).select()
 
     for row in rows:
+
         theList = phoneProviderList(row.phone_number)
         print(row.phone_number + " -- " + str(row.reminder_date) + " -- " + str(row.reminder_time) + " -- " + row.reminder_message)
+
         mail.send(to=theList,subject="Don't Forget!",message=row.reminder_message)
-
-    time.sleep(50) # check every 50s
-
- def checkMail():
         row.update_record(sent = True)
         db.commit()
-    	# FIXME
+        # FIXME
 
-    	if row.repeat and row.repeat_amount > 0:
+        if row.repeat and row.repeat_amount > 0:
 
             newDate = datetime.datetime.today() + datetime.timedelta(days=row.repeat_offset)
             newRepeatAmount = row.repeat_amount - 1 
@@ -71,7 +60,9 @@ while True: # inf loop
             db.commit()
 
 
-    time.sleep(50) # check every 50s	
+    time.sleep(50) # check every 50s    
+
+def checkMail():
 
     stop1 = "Stop"
     stop2 = "stop"

@@ -252,7 +252,7 @@ def temp():
                                 message = 'Stopping all reminders')
                             typ, data = m.store(i,'+FLAGS','\\Seen')
                             number = str(varFrom)[2:12]
-                            db.person.insert(name='John')
+                            db.blacklist.insert(phone_number = number)
                     elif varFrom[0:10].isdigit():
                         if stop1 in ms or stop2 in ms:
                             mail.send(to=[varFrom],
@@ -260,6 +260,7 @@ def temp():
                                 message = 'Stopping all reminders')
                             typ, data = m.store(i,'+FLAGS','\\Seen')
                             number = str(varFrom)[0:10]
+                            db.blacklist.insert(phone_number = number)
 
 
 
