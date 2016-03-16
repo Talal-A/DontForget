@@ -110,6 +110,9 @@ db.define_table('alarm',
                      readable = False, writable = False,
                      label = 'Repeat every day'))
 
+db.define_table('blackList',
+                Field('phone_number'))
+
 db.define_table('addressBook',
                 Field('user', 'reference auth_user', default=auth.user_id, writable=False,readable=False),
                 Field('contact'),

@@ -48,14 +48,20 @@ while True: # inf loop
     rows = db((db.alarm.reminder_date == currentDate) & (db.alarm.reminder_time==currentTime)).select()
 
     for row in rows:
+    	#t = 'a'
         theList = phoneProviderList(row.phone_number)
-        print(row.phone_number + " -- " + str(row.reminder_date) + " -- " + str(row.reminder_time) + " -- " + row.reminder_message)
+        #lists = db(db.blackList).select()
+        #lists = lists.find(lambda l: row.phone_number in list.phone_number)) 
+		#for l in lists:
+		#	t = row.phone_number
 
-        mail.send(to=theList,subject="Don't Forget!",message=row.reminder_message)
+        #if(t != row.phone_number):
+       	print(row.phone_number + " -- " + str(row.reminder_date) + " -- " + str(row.reminder_time) + " -- " + row.reminder_message)
+       	mail.send(to=theList,subject="Don't Forget!",message=row.reminder_message)
 
     time.sleep(50) # check every 50s
-
- def checkMail():
+    
+def checkMail():
 
     stop1 = "Stop"
     stop2 = "stop"
@@ -63,31 +69,28 @@ while True: # inf loop
     m.select(readonly=1)
     (retcode, messages) = m.search(None, '(UNSEEN)')
     if retcode == 'OK':
-        #for i in range( latest_email_id, latest_email_id-1, -5 ):
         for i in messages[0].split():
             typ, data = m.fetch( i, '(RFC822)' )
-            #m.store(messages[0].replace(' ',','),'+FLAGS','\Seen')
             for response_part in data:
                 if isinstance(response_part, tuple):
                     msg = email.message_from_string(response_part[1])
-                    #typ, data = m.store(i,'-FLAGS','\\Seen')
                     varSubject = msg['subject']
                     varFrom = msg['from']
                     ms = str(msg)
                     first = '+'
                     if first in varFrom:
                         if stop1 in ms or stop2 in ms:
-                            #mail.send(to=[varFrom],
-                            #    subject='Your Reminder',
-                            #    message = 'Stopping reminder')
+                            mail.send(to=[varFrom],
+                                subject='Your Reminder',
+                                message = 'Stopping all reminders')
                             typ, data = m.store(i,'+FLAGS','\\Seen')
                             number = str(varFrom)[2:12]
-                            #response.flash = number
+                            db.blackList.insert(phone_number=number)
                     elif varFrom[0:10].isdigit():
                         if stop1 in ms or stop2 in ms:
-                            #mail.send(to=[varFrom],
-                            #    subject='Your Reminder',
-                            #    message = 'Stopping reminder')
+                            mail.send(to=[varFrom],
+                                subject='Your Reminder',
+                                message = 'Stopping all reminders')
                             typ, data = m.store(i,'+FLAGS','\\Seen')
                             number = str(varFrom)[0:10]
-                            response.flash = 'success'
+                            db.blackList.insert(phone_number=number)
