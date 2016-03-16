@@ -111,9 +111,9 @@ db.define_table('alarm',
                      label = 'Repeat every day'),
                 Field('sent', 'boolean', default = False,
                     readable = False, writable = False),
-                Field('repeat_offset', label = 'How many days between each reminder',
+                Field('repeat_offset', 'integer', label = 'How many days between each reminder',
                      readable = True, writable = True),
-                Field('repeat_amount', label = 'How many times would you like the reminder to repeat',
+                Field('repeat_amount', 'integer', label = 'How many times would you like the reminder to repeat',
                      readable = True, writable = True))
 
 db.define_table('addressBook',
