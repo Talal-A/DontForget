@@ -60,20 +60,7 @@ def show():
 def init():
     return dict(message="Hello")
 
-def phoneProviderList(phonenumber):
-
-    listOfNumbers = []
-    listOfNumbers.append(phonenumber + "@text.wireless.alltel.com") #Alltel
-    listOfNumbers.append(phonenumber + "@text.att.net")             #AT&T
-    listOfNumbers.append(phonenumber + "@sms.mycricket.com")        #Cricket
-    listOfNumbers.append(phonenumber + "@messaging.sprintpcs.com")  #Sprint
-    listOfNumbers.append(phonenumber + "@page.nextel.com")          #Nextel
-    listOfNumbers.append(phonenumber + "@tmomail.net")              #T-Mobile
-    listOfNumbers.append(phonenumber + "@email.uscc.net")           #U.S. Cellular
-    listOfNumbers.append(phonenumber + "@vtext.com")                #Verizon
-    return listOfNumbers
-
-
+@auth.requires_login()
 def quick_reminder_birthday():
 
     form = SQLFORM.factory(
@@ -99,6 +86,60 @@ def quick_reminder_birthday():
         response.flash = form.errors
 
     return dict(form= form)
+
+@auth.requires_login()
+def quick_reminder_homework():
+
+    form = SQLFORM.factory(
+        Field('homework_name', 'string',  requires = IS_NOT_EMPTY()),
+        Field('homework_date', 'date', requires = IS_DATE()))
+
+    if form.process().accepted:
+
+        user = auth.user_id
+        phone = auth.user.phone
+        date = form.vars.homework_date
+        time = "00:00:00" # default - remind them at midnight
+        message = str(form.vars.homework_name) + " is due today!"
+        rep = False
+
+        db.alarm.insert(user_id = user, phone_number = phone, reminder_date = date,
+            reminder_time = time, reminder_message = message, repeat = rep)
+
+        redirect(URL('signedIn'))
+
+    else:
+
+        response.flash = form.errors
+
+    return dict(form= form)
+
+@auth.requires_login()
+def quick_reminder_wakeup():
+
+    form = SQLFORM.factory(
+        Field('wakeup_time', 'date', requires = IS_TIME()))
+
+    if form.process().accepted:
+
+        user = auth.user_id
+        phone = auth.user.phone
+        date = datetime.datetime.today() + datetime.timedelta(days=1)
+        time = form.vars.wakeup_time
+        message = "Rise and shine!"
+        rep = False
+
+        db.alarm.insert(user_id = user, phone_number = phone, reminder_date = date,
+            reminder_time = time, reminder_message = message, repeat = rep)
+
+        redirect(URL('signedIn'))
+
+    else:
+
+        response.flash = form.errors
+
+    return dict(form= form)
+
 #controller for signedIn user
 def signedIn():
     #if user not signed in redirect to index/main page
