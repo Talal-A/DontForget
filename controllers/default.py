@@ -1,9 +1,13 @@
 from gluon.tools import Mail
 import imaplib
 import email
+from dateutil.parser import parse
+import datetime
+from gluon.tools import prettydate
+
 from email.header import decode_header
 
-from datetime import datetime
+
 import time
 
 mail = Mail()
@@ -69,6 +73,8 @@ def phoneProviderList(phonenumber):
     listOfNumbers.append(phonenumber + "@vtext.com")                #Verizon
     return listOfNumbers
 
+
+#controller for signedIn user
 def signedIn():
     #if user not signed in redirect to index/main page
     if not auth.user:
@@ -76,11 +82,28 @@ def signedIn():
 
     form = SQLFORM(db.alarm)
     session.fromSignedIn=1 #flag to indicate coming from signed in to create a new alarm
-    return dict(form=form)
+
+    #list = myReminders()
+    list =  db(db.alarm.phone_number == auth.user.phone).select()
+
+    #list to hold prettydate() times
+    remLists = []
+    today = datetime.date.today()
+
+    for alarm in list:
+        # we only want to display future reminders
+        if alarm.reminder_date > today:
+            a = prettydate(alarm.reminder_date,T)
+            b = alarm.reminder_time
+            # place time and prettydate() into obj
+            objAB = [a,b]
+            #append to list
+            remLists.append(objAB)
+
+    return dict(form=form,list=list,remLists=remLists,today=today)
 
 def myReminders():
     list =  db(db.alarm.phone_number == auth.user.phone).select()
-
     return dict(list=list)
 
 def quickAlarm():
@@ -94,6 +117,7 @@ def quickAlarm():
         session.alarmType = "none"
     return dict(form=form)
 
+#controller for the custom form with styling
 def display_manual_form():
 
     form = SQLFORM(db.alarm)
@@ -105,8 +129,9 @@ def display_manual_form():
         phoneNum = auth.user.phone
     # if not leave blank
     else:
-        phoneNum = "none"
+        phoneNum = ""
 
+    #responses to form submission
     if form.process(session=None, formname= None, keepvalues=True).accepted:
         if auth.user and not session.fromSignedIn:
             redirect((URL('signedIn')))
@@ -133,6 +158,7 @@ def display_manual_form():
 
 def reminderSummary():
     return dict()
+
 def temp():
 
     stop1 = "Stop"

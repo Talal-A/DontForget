@@ -1,5 +1,9 @@
 {{extend "layout.html"}}
 
+        <style>
+
+        </style>
+
 <br>
 <br>
 <br>
@@ -11,7 +15,6 @@
 <a href="{{=URL('index')}}" class="button orange active"><span>✓</span>Create New Reminder</a>
 <a href="{{=URL('addcontact')}}" class="button orange active"><span>✓</span>Add A Friend</a>
 
-<!-- More Buttons if we need them-->
 
 <h2>Quick Alarms</h2>
 <a href="{{=URL('quickAlarm')}}" class="button purple"><span>✓</span>Wake Up</a>
@@ -20,8 +23,20 @@
 
 </div>
 
-<h2>{{#=session.alarmType}}</h2>
+<h2>
 
-{{#=A('View Past Reminders',_href=URL('myReminders'))}}
+<ul>
 
-{{#=A('Create new Reminder', _href=URL('index'))}}
+<h2> Your Future Reminders</h2>
+
+<ol class="rounded-list">
+{{for alarmTime in remLists:}}
+        <li><a href="#"> {{=alarmTime[0]}} @ {{=alarmTime[1]}}</a></li>
+{{pass}}
+</ol>
+
+</ul>
+
+
+
+
