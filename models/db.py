@@ -108,7 +108,9 @@ db.define_table('alarm',
                 Field('reminder_message'),
                 Field('repeat', 'boolean', default = False,
                      readable = False, writable = False,
-                     label = 'Repeat every day'))
+                     label = 'Repeat every day'),
+                Field('sent', 'boolean', default = False,
+                    readable = False, writable = False))
 
 db.define_table('addressBook',
                 Field('user', 'reference auth_user', default=auth.user_id, writable=False,readable=False),
