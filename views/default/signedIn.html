@@ -11,9 +11,9 @@
 <div class="container" >
 <link href="{{=URL('static', 'css/button.css')}}" rel="stylesheet" type="text/css" />
 
-<a href="{{=URL('myReminders')}}" class="button"><span>✓</span>View Past Reminders </a>
+<a href="{{=URL('myReminders')}}" class="button"><span>✓</span>All my Reminders </a>
 <a href="{{=URL('index')}}" class="button orange active"><span>✓</span>Create New Reminder</a>
-<a href="{{=URL('addcontact')}}" class="button orange active"><span>✓</span>Add A Friend</a>
+<a href="{{=URL('addcontact')}}" class="button red"><span>✓</span>Add A Friend</a>
 
 
 <h2>Quick Alarms</h2>
@@ -31,7 +31,7 @@
 
 <ol class="rounded-list">
 {{for alarmTime in remLists:}}
-        <li><a href="#"> {{=alarmTime[0]}} @ {{=alarmTime[1]}}</a></li>
+        <li><a href="#"> {{=alarmTime[0]}} @ {{=alarmTime[1]}} message -> {{=alarmTime[2]}}</a></li>
 {{pass}}
 </ol>
 
