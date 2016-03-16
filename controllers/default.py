@@ -102,18 +102,13 @@ def temp():
                             #    subject='Your Reminder',
                             #    message = 'Stopping reminder')
                             typ, data = m.store(i,'+FLAGS','\\Seen')
-                        #number = str(varFrom)[2:12]
-                        #response.flash = number
-                    elif varFrom[0].isdigit():
+                            number = str(varFrom)[2:12]
+                            #response.flash = number
+                    elif varFrom[0:10].isdigit():
                         if stop1 in ms or stop2 in ms:
                             #mail.send(to=[varFrom],
                             #    subject='Your Reminder',
                             #    message = 'Stopping reminder')
                             typ, data = m.store(i,'+FLAGS','\\Seen')
                             number = str(varFrom)[0:10]
-                            response.flash = 'nice'
-                    #else:
-                     #   response.flash = 'none'
-                            #mail.send(to=[varFrom],
-                            #    subject='Your Reminder',
-                            #    message = 'Please type \'stop\' if you no longer want to receive reminders.')
+                            response.flash = 'success'
