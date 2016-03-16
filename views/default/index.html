@@ -2,16 +2,21 @@
 <head>
 
 <style>
-    div
+
 </style>
 
 </head>
 
-<div id="title"><h1>Don't Forget</h1></div>
-
-
+<!--This will send to signedIn page is the user is authorized -->
 {{if auth.user and not session.fromSignedIn:}}
     {{redirect((URL('signedIn')))}}
 {{pass}}
 
-{{=form}}
+<!-- Send to display manual form wr the custom form is -->
+{{redirect((URL('display_manual_form')))}}
+
+
+
+
+
+<div style="text-align: center;"> {{=form}}</div>

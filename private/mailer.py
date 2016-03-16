@@ -41,7 +41,6 @@ while True: # inf loop
 
     # Current Time HH:MM:00
 
-
     currentTime = currentHourString + ":" + str(currentMin) + ":00"
 
     print(currentTime)
