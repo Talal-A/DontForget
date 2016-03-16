@@ -142,7 +142,7 @@ def quick_reminder_wakeup():
 
     return dict(form= form)
 
->>>>>>> origin/master
+
 #controller for signedIn user
 def signedIn():
     #if user not signed in redirect to index/main page
