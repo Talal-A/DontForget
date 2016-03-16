@@ -74,6 +74,31 @@ def phoneProviderList(phonenumber):
     return listOfNumbers
 
 
+def quick_reminder_birthday():
+
+    form = SQLFORM.factory(
+        Field('birthday_name', 'string',  requires = IS_NOT_EMPTY()),
+        Field('birthday_date', 'date', requires = IS_DATE()))
+
+    if form.process().accepted:
+
+        user = auth.user_id
+        phone = auth.user.phone
+        date = form.vars.birthday_date
+        time = "09:00:00" # default - remind them at 9am
+        message = "Don't forget to wish " + str(form.vars.birthday_name) + " a happy birthday!"
+        rep = False
+
+        db.alarm.insert(user_id = user, phone_number = phone, reminder_date = date,
+            reminder_time = time, reminder_message = message, repeat = rep)
+
+        redirect(URL('signedIn'))
+
+    else:
+
+        response.flash = form.errors
+
+    return dict(form= form)
 #controller for signedIn user
 def signedIn():
     #if user not signed in redirect to index/main page
