@@ -1,9 +1,14 @@
 # Attempting to send mail at the correct times.
+from gluon.tools import Mail
+import imaplib
+import email
+import datetime
+from gluon.tools import prettydate
+
+from email.header import decode_header
+
 
 import time
-import datetime
-from gluon.tools import Mail
-
 mail = Mail()
 
 mail.settings.server = 'smtp.gmail.com:587'
@@ -22,6 +27,72 @@ def phoneProviderList(phonenumber):
     listOfNumbers.append(phonenumber + "@email.uscc.net")           #U.S. Cellular
     listOfNumbers.append(phonenumber + "@vtext.com")                #Verizon
     return listOfNumbers
+
+def checkMail():
+    m = imaplib.IMAP4_SSL('imap.gmail.com')
+    (retcode, capabilities) = m.login('dontforgetyourevent@gmail.com', 'web2pyucsc')
+    m.list()
+    m.select('inbox')
+
+    m.select('inbox')
+    typ, data = m.search(None, 'ALL')
+    ids = data[0]
+    id_list = ids.split()
+
+    #get the most recent email id
+    latest_email_id = int( id_list[-1] )
+
+    imapdb = DAL("imap://dontforgetyourevent@gmail.com:web2pyucsc@smtp.gmail.com:993", pool_size=1)
+    imapdb.define_tables()
+
+    q = imapdb.INBOX.seen == False
+    q &= imapdb.INBOX.created == request.now.date()
+    q &= imapdb.INBOX.size < 6000
+    unread = imapdb(q).count()
+
+    rows = imapdb(q).select()
+
+    mymessage = imapdb(imapdb.INBOX.uid == latest_email_id).select().first()
+
+    stop1 = "Stop"
+    stop2 = "stop"
+
+    m.select(readonly=1)
+    (retcode, messages) = m.search(None, '(UNSEEN)')
+    if retcode == 'OK':
+        for i in messages[0].split():
+            typ, data = m.fetch( i, '(RFC822)' )
+            for response_part in data:
+                if isinstance(response_part, tuple):
+                    msg = email.message_from_string(response_part[1])
+                    varSubject = msg['subject']
+                    varFrom = msg['from']
+                    ms = str(msg)
+                    first = '+'
+                    if first in varFrom:
+                        if stop1 in ms or stop2 in ms:
+                            number = str(varFrom)[2:12]
+                            rows = db((db.blackList.phone_number == number)).select()
+                            if len(rows) == 0:
+                                mail.send(to=[varFrom],
+                                    subject='Your Reminder',
+                                    message = 'Stopping all reminders')
+                                typ, data = m.store(i,'+FLAGS','\\Seen')
+                                number = str(varFrom)[2:12]
+                                db.blackList.insert(phone_number = number)
+                                db.commit()
+                    elif varFrom[0:10].isdigit():
+                        if stop1 in ms or stop2 in ms:
+                            number = str(varFrom)[0:10]
+                            rows = db((db.blackList.phone_number == number)).select()
+                            if len(rows) == 0:
+                                mail.send(to=[varFrom],
+                                    subject='Your Reminder',
+                                    message = 'Stopping all reminders')
+                                typ, data = m.store(i,'+FLAGS','\\Seen')
+                                number = str(varFrom)[0:10]
+                                db.blackList.insert(phone_number = number)
+                                db.commit()
 
 while True: # inf loop
 
@@ -44,57 +115,25 @@ while True: # inf loop
         theList = phoneProviderList(row.phone_number)
         print(row.phone_number + " -- " + str(row.reminder_date) + " -- " + str(row.reminder_time) + " -- " + row.reminder_message)
 
-        mail.send(to=theList,subject="Don't Forget!",message=row.reminder_message)
-        row.update_record(sent = True)
-        db.commit()
-        # FIXME
-
-        if row.repeat and row.repeat_amount > 0:
-
-            newDate = datetime.datetime.today() + datetime.timedelta(days=row.repeat_offset)
-            newRepeatAmount = row.repeat_amount - 1 
-            row.update_record(reminder_date  = newDate)
-            row.update_record(repeat_amount = newRepeatAmount)
-            row.update_record(sent = False)
-
+        blackListed = db((db.blackList.phone_number == row.phone_number)).select()
+        if len(rows) == 0:
+            mail.send(to=theList,subject="Don't Forget!",message=row.reminder_message)
+            row.update_record(sent = True)
             db.commit()
+            # FIXME
 
+            if row.repeat and row.repeat_amount > 0:
+
+                newDate = datetime.datetime.today() + datetime.timedelta(days=row.repeat_offset)
+                newRepeatAmount = row.repeat_amount - 1 
+                row.update_record(reminder_date  = newDate)
+                row.update_record(repeat_amount = newRepeatAmount)
+                row.update_record(sent = False)
+
+                db.commit()
+        else:
+            print("Blacklisted!")
+
+    checkMail()
 
     time.sleep(50) # check every 50s    
-
-def checkMail():
-
-    stop1 = "Stop"
-    stop2 = "stop"
-
-    m.select(readonly=1)
-    (retcode, messages) = m.search(None, '(UNSEEN)')
-    if retcode == 'OK':
-        #for i in range( latest_email_id, latest_email_id-1, -5 ):
-        for i in messages[0].split():
-            typ, data = m.fetch( i, '(RFC822)' )
-            #m.store(messages[0].replace(' ',','),'+FLAGS','\Seen')
-            for response_part in data:
-                if isinstance(response_part, tuple):
-                    msg = email.message_from_string(response_part[1])
-                    #typ, data = m.store(i,'-FLAGS','\\Seen')
-                    varSubject = msg['subject']
-                    varFrom = msg['from']
-                    ms = str(msg)
-                    first = '+'
-                    if first in varFrom:
-                        if stop1 in ms or stop2 in ms:
-                            #mail.send(to=[varFrom],
-                            #    subject='Your Reminder',
-                            #    message = 'Stopping reminder')
-                            typ, data = m.store(i,'+FLAGS','\\Seen')
-                            number = str(varFrom)[2:12]
-                            #response.flash = number
-                    elif varFrom[0:10].isdigit():
-                        if stop1 in ms or stop2 in ms:
-                            #mail.send(to=[varFrom],
-                            #    subject='Your Reminder',
-                            #    message = 'Stopping reminder')
-                            typ, data = m.store(i,'+FLAGS','\\Seen')
-                            number = str(varFrom)[0:10]
-                            response.flash = 'success'
