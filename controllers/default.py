@@ -75,9 +75,11 @@ def quick_reminder_birthday():
         time = "09:00:00" # default - remind them at 9am
         message = "Don't forget to wish " + str(form.vars.birthday_name) + " a happy birthday!"
         rep = False
+        rep_offset = 365
+        rep_amount = 2
 
         db.alarm.insert(user_id = user, phone_number = phone, reminder_date = date,
-            reminder_time = time, reminder_message = message, repeat = rep)
+            reminder_time = time, reminder_message = message, repeat = rep, repeat_offset = rep_offset, repeat_amount = rep_amount)
 
         redirect(URL('signedIn'))
 
