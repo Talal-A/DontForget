@@ -108,7 +108,11 @@ db.define_table('alarm',
                 Field('reminder_message'),
                 Field('repeat', 'boolean', default = False,
                      readable = False, writable = False,
-                     label = 'Repeat every day'))
+                     label = 'Repeat every day'),
+                Field('repeat_offset', label = 'How many days between each reminder',
+                     readable = True, writable = True),
+                Field('repeat_amount', label = 'How many times would you like the reminder to repeat',
+                     readable = True, writable = True))
 
 db.define_table('addressBook',
                 Field('user', 'reference auth_user', default=auth.user_id, writable=False,readable=False),
@@ -124,6 +128,10 @@ if auth.user:
     db.alarm.phone_number.default = auth.user.phone
     db.alarm.repeat.writable = True
     db.alarm.repeat.readable = True
+    db.alarm.repeat_offset.writable = True
+    db.alarm.repeat_offset.readable = True
+    db.alarm.repeat_amount.writable = True
+    db.alarm.repeat_amount.readable = True
     #db.alarm.carrier.default = auth.user.carrier
 
 #     #if quick alarm flag set, display only the time
