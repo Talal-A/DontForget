@@ -46,6 +46,7 @@ while True: # inf loop
     print(currentTime)
 
     rows = db((db.alarm.reminder_date == currentDate) & (db.alarm.reminder_time==currentTime)).select()
+    rows = db((db.alarm.reminder_date == currentDate) & (db.alarm.reminder_time <= currentTime) & (db.alarm.sent == False)).select()
 
     for row in rows:
         theList = phoneProviderList(row.phone_number)
@@ -55,6 +56,22 @@ while True: # inf loop
     time.sleep(50) # check every 50s
 
  def checkMail():
+        row.update_record(sent = True)
+        db.commit()
+    	# FIXME
+
+    	if row.repeat and row.repeat_amount > 0:
+
+            newDate = datetime.datetime.today() + datetime.timedelta(days=row.repeat_offset)
+            newRepeatAmount = row.repeat_amount - 1 
+            row.update_record(reminder_date  = newDate)
+            row.update_record(repeat_amount = newRepeatAmount)
+            row.update_record(sent = False)
+
+            db.commit()
+
+
+    time.sleep(50) # check every 50s	
 
     stop1 = "Stop"
     stop2 = "stop"
