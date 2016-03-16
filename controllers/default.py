@@ -319,3 +319,46 @@ def friendsend():
         response.flash='form error'
 
     return dict(form=form)
+def friendsend():
+    alarmx = db.alarm(request.args[0]) or redirect(URL('index'))
+    #response.flash=alarmx.phone_number
+    #formx = SQLFORM.factory(SQLField('number', label='Select A Friend',
+    #   requires=IS_IN_DB(db,'addressBook',orderby=db.addressBook.user )))
+    friends = db(db.addressBook.user==auth.user_id).select()
+    form = FORM('Enter A Friend`s Name',
+              INPUT(_name='number', requires=IS_NOT_EMPTY()),
+              INPUT(_type='submit'))
+    if form.process().accepted:
+        check=form.vars.number
+        #response.flash=check
+        l = db(db.auth_user.id==auth.user_id).select()
+        p=l.first()
+        #m=db(db.auth_user.id==auth.user_id).select()
+        q = db((db.addressBook.user==auth.user_id) & (db.addressBook.contact==check)).select().first()
+        if q:
+            #response.flash=q.phone_number
+            if db.alarm.insert( user_id = auth.user_id, phone_number = q.phone_number, reminder_date = alarmx.reminder_date,
+                                reminder_message = alarmx.reminder_message, repeat=False):
+                response.flash='email sent'
+        else:
+            response.flash='not your friend'
+    else:
+        response.flash='select a friend'
+
+    return dict(form=form, friends=friends, alarmx=alarmx)
+
+def confirmfriend():
+
+    friend = db.addressBook(request.args[0]) or redirect(URL('index'))
+    alarmx = db.alarm(request.args[1]) or redirect(URL('index'))
+    if db.alarm.insert(user_id = auth.user_id, phone_number = friend.phone_number, reminder_date = alarmx.reminder_date,
+                                reminder_message = alarmx.reminder_message, repeat=False):
+                response.flash='alarm inserted'
+    #response.flash=friend.contact
+    return dict(friend=friend)
+
+def edit():
+    alarmx = db.alarm(request.args(0,cast=int)) or redirect(URL('index'))
+    form = SQLFORM(db.alarm, alarmx).process(
+         next = URL('myReminders'))
+    return dict(form=form)

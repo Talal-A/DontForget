@@ -1,2 +1,8 @@
 {{extend 'layout.html'}}
-{{=form}}
+Your Friends
+<ul>{{for addressBook in friends:}}
+ {{=LI(A(addressBook.contact, _href=URL('confirmfriend', args=(addressBook.id, alarmx.id))))}}
+
+ <!--{{=MARKMIN(addressBook.contact)}}-->
+{{pass}}</ul>
+{{=A('Back', _href=URL('myReminders'))}}
