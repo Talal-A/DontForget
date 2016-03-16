@@ -32,6 +32,10 @@ while True: # inf loop
     	currentHourString = "0" + str(currentHour)
     else:
     	currentHourString = str(currentHour)
+    if currentMin < 10:
+	currentMinString = "0" + str(currentMin)
+    else:
+        currentMinString = str(currentMin)
 
     # Current Date YYYY-MM-DD
 
@@ -41,7 +45,7 @@ while True: # inf loop
 
     # Current Time HH:MM:00
 
-    currentTime = currentHourString + ":" + str(currentMin) + ":00"
+    currentTime = currentHourString + ":" + currentMinString + ":00"
 
     print(currentTime)
 
@@ -52,42 +56,45 @@ while True: # inf loop
         print(row.phone_number + " -- " + str(row.reminder_date) + " -- " + str(row.reminder_time) + " -- " + row.reminder_message)
 
         mail.send(to=theList,subject="Don't Forget!",message=row.reminder_message)
+    	# FIXME
+    	if row.repeat and row.repeat_amount > 0:
+        	row.update_record(reminder_date  = (datetime.now().date + datetime.timedelta(days = row.repeat_offset)))
+		row.update_record(repeat_amount = repeat_amount - 1)
 
-    time.sleep(50) # check every 50s
+    time.sleep(50) # check every 50s	
 
- def checkMail():
+    def checkMail():
+       stop1 = "Stop"
+       stop2 = "stop"
 
-    stop1 = "Stop"
-    stop2 = "stop"
-
-    m.select(readonly=1)
-    (retcode, messages) = m.search(None, '(UNSEEN)')
-    if retcode == 'OK':
+       m.select(readonly=1)
+       (retcode, messages) = m.search(None, '(UNSEEN)')
+       if retcode == 'OK':
         #for i in range( latest_email_id, latest_email_id-1, -5 ):
-        for i in messages[0].split():
-            typ, data = m.fetch( i, '(RFC822)' )
+           for i in messages[0].split():
+               typ, data = m.fetch( i, '(RFC822)' )
             #m.store(messages[0].replace(' ',','),'+FLAGS','\Seen')
-            for response_part in data:
-                if isinstance(response_part, tuple):
-                    msg = email.message_from_string(response_part[1])
-                    #typ, data = m.store(i,'-FLAGS','\\Seen')
-                    varSubject = msg['subject']
-                    varFrom = msg['from']
-                    ms = str(msg)
-                    first = '+'
-                    if first in varFrom:
-                        if stop1 in ms or stop2 in ms:
+               for response_part in data:
+                   if isinstance(response_part, tuple):
+                       msg = email.message_from_string(response_part[1])
+                       #typ, data = m.store(i,'-FLAGS','\\Seen')
+                       varSubject = msg['subject']
+                       varFrom = msg['from']
+                       ms = str(msg)
+                       first = '+'
+                       if first in varFrom:
+                           if stop1 in ms or stop2 in ms:
                             #mail.send(to=[varFrom],
                             #    subject='Your Reminder',
                             #    message = 'Stopping reminder')
-                            typ, data = m.store(i,'+FLAGS','\\Seen')
-                            number = str(varFrom)[2:12]
+                               typ, data = m.store(i,'+FLAGS','\\Seen')
+                               number = str(varFrom)[2:12]
                             #response.flash = number
-                    elif varFrom[0:10].isdigit():
-                        if stop1 in ms or stop2 in ms:
+                       elif varFrom[0:10].isdigit():
+                           if stop1 in ms or stop2 in ms:
                             #mail.send(to=[varFrom],
                             #    subject='Your Reminder',
                             #    message = 'Stopping reminder')
-                            typ, data = m.store(i,'+FLAGS','\\Seen')
-                            number = str(varFrom)[0:10]
-                            response.flash = 'success'
+                               typ, data = m.store(i,'+FLAGS','\\Seen')
+                               number = str(varFrom)[0:10]
+                               response.flash = 'success'

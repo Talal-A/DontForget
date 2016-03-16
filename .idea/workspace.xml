@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d81d3cec-5c97-46c1-9ebe-e9ab63a3baaf" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/default.py" afterPath="$PROJECT_DIR$/controllers/default.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/default/quick_reminder_homework.html" afterPath="$PROJECT_DIR$/views/default/quick_reminder_homework.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/views/default/quick_reminder_wakeup.html" afterPath="$PROJECT_DIR$/views/default/quick_reminder_wakeup.html" />
     </list>
     <ignored path="DontForget.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -49,11 +51,31 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="quick_reminder_birthday.html" pinned="false" current-in-tab="true">
+          <file leaf-file-name="quick_reminder_birthday.html" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/views/default/quick_reminder_birthday.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.7924528">
+                <state vertical-scroll-proportion="-26.25">
                   <caret line="46" column="34" selection-start-line="46" selection-start-column="34" selection-end-line="46" selection-end-column="34" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="quick_reminder_homework.html" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/views/default/quick_reminder_homework.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="-29.375">
+                  <caret line="54" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="quick_reminder_wakeup.html" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/views/default/quick_reminder_wakeup.html">
+              <provider selected="true" editor-type-id="text-editor">
+                <state vertical-scroll-proportion="0.5471698">
+                  <caret line="33" column="54" selection-start-line="33" selection-start-column="54" selection-end-line="33" selection-end-column="54" />
                   <folding />
                 </state>
               </provider>
@@ -87,7 +109,7 @@
             <entry file="file://$PROJECT_DIR$/controllers/default.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state vertical-scroll-proportion="0.43223444">
-                  <caret line="144" column="0" selection-start-line="144" selection-start-column="0" selection-end-line="144" selection-end-column="0" />
+                  <caret line="124" column="76" selection-start-line="124" selection-start-column="76" selection-end-line="124" selection-end-column="76" />
                   <folding>
                     <element signature="e#0#28#0" expanded="true" />
                   </folding>
@@ -135,7 +157,9 @@
         <option value="$PROJECT_DIR$/views/default/display_manual_form.html" />
         <option value="$PROJECT_DIR$/views/default/quickAlarm.html" />
         <option value="$PROJECT_DIR$/views/default/quick_reminder_birthday.html" />
+        <option value="$PROJECT_DIR$/views/default/quick_reminder_homework.html" />
         <option value="$PROJECT_DIR$/controllers/default.py" />
+        <option value="$PROJECT_DIR$/views/default/quick_reminder_wakeup.html" />
       </list>
     </option>
   </component>
@@ -585,22 +609,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/views/default/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="13" column="18" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/db.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/menu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -974,14 +982,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/default/quick_reminder_birthday.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7924528">
-          <caret line="46" column="34" selection-start-line="46" selection-start-column="34" selection-end-line="46" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/default/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-13.125">
@@ -990,13 +990,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/views/default/quick_reminder_birthday.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-26.25">
+          <caret line="46" column="34" selection-start-line="46" selection-start-column="34" selection-end-line="46" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/controllers/default.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.43223444">
-          <caret line="144" column="0" selection-start-line="144" selection-start-column="0" selection-end-line="144" selection-end-column="0" />
+          <caret line="124" column="76" selection-start-line="124" selection-start-column="76" selection-end-line="124" selection-end-column="76" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/default/quick_reminder_homework.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-29.375">
+          <caret line="54" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/default/quick_reminder_wakeup.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5471698">
+          <caret line="33" column="54" selection-start-line="33" selection-start-column="54" selection-end-line="33" selection-end-column="54" />
+          <folding />
         </state>
       </provider>
     </entry>

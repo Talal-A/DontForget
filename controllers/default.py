@@ -96,7 +96,7 @@ def quick_reminder_homework():
         Field('homework_name', 'string',  requires = IS_NOT_EMPTY()),
         Field('homework_date', 'date', requires = IS_DATE()))
 
-    if form.process().accepted:
+    if form.process(session=None, formname= None, keepvalues=True).accepted:
 
         user = auth.user_id
         phone = auth.user.phone
@@ -122,7 +122,7 @@ def quick_reminder_wakeup():
     form = SQLFORM.factory(
         Field('wakeup_time', 'date', requires = IS_TIME()))
 
-    if form.process().accepted:
+    if form.process(session=None, formname= None, keepvalues=True).accepted:
 
         user = auth.user_id
         phone = auth.user.phone
