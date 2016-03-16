@@ -37,7 +37,7 @@ while True: # inf loop
     currentTime = datetime.datetime.now().time()
     print(currentTime)
 
-    rows = db(db.alarm.reminder_date == currentDate).select()
+    rows = db((db.alarm.reminder_date == currentDate) & (db.alarm.reminder_time <= currentTime) & (db.alarm.sent == False)).select()
 
     for row in rows:
 
@@ -45,6 +45,8 @@ while True: # inf loop
         print(row.phone_number + " -- " + str(row.reminder_date) + " -- " + str(row.reminder_time) + " -- " + row.reminder_message)
 
         mail.send(to=theList,subject="Don't Forget!",message=row.reminder_message)
+        row.update_record(sent = True)
+        db.commit()
     	# FIXME
 
     	if row.repeat and row.repeat_amount > 0:
@@ -53,8 +55,11 @@ while True: # inf loop
             newRepeatAmount = row.repeat_amount - 1 
             row.update_record(reminder_date  = newDate)
             row.update_record(repeat_amount = newRepeatAmount)
+            row.update_record(sent = False)
 
             db.commit()
+
+
     time.sleep(50) # check every 50s	
 
     def checkMail():
